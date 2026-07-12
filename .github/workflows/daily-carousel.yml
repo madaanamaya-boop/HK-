@@ -2,8 +2,9 @@ name: Daily carousel
 
 on:
   schedule:
-    # 03:30 UTC = 09:00 IST. Adjust to your audience's peak time.
-    - cron: "30 3 * * *"
+    # GitHub cron runs in UTC. 12:30 UTC = 18:00 IST (6pm India time).
+    # For 6pm in another timezone, convert to UTC and change this line.
+    - cron: "30 12 * * *"
   workflow_dispatch:
     inputs:
       no_publish:
