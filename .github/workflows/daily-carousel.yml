@@ -1,0 +1,82 @@
+name: Daily carousel
+
+on:
+  schedule:
+    # 03:30 UTC = 09:00 IST. Adjust to your audience's peak time.
+    - cron: "30 3 * * *"
+  workflow_dispatch:
+    inputs:
+      no_publish:
+        description: "Generate and render only (skip posting)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-carousel
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npx playwright install --with-deps chromium
+
+      - name: Generate plan with Claude
+        run: node src/index.js generate
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Render slides
+        run: node src/index.js render
+
+      - name: Host slides (commit to published/ so Meta can fetch them)
+        run: |
+          DATE=$(date -u +%F)
+          mkdir -p "published/$DATE"
+          cp out/"$DATE"/slide-*.png "published/$DATE/"
+          git config user.name "carousel-agent"
+          git config user.email "actions@github.com"
+          git add "published/$DATE"
+          git commit -m "Add carousel slides for $DATE" || echo "nothing to commit"
+          git push origin main
+
+      - name: Publish to platforms
+        if: ${{ !inputs.no_publish }}
+        run: node src/index.js publish
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_AUTHOR_URN: ${{ secrets.LINKEDIN_AUTHOR_URN }}
+          # Optional: restrict platforms, e.g. "linkedin" while Meta review is pending
+          PLATFORMS: ${{ vars.PLATFORMS || 'instagram,threads,linkedin' }}
+
+      - name: Save posting history
+        if: ${{ !inputs.no_publish }}
+        run: |
+          git add content/history.json
+          git commit -m "Record post for $(date -u +%F)" || echo "nothing to commit"
+          git pull --rebase origin main
+          git push origin main
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: carousel-${{ github.run_id }}
+          path: out/

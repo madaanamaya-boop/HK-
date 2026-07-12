@@ -1,0 +1,10 @@
+# Optional topic queue. The agent works through this list top-to-bottom,
+# skipping topics already recorded in content/history.json.
+# When the queue is exhausted (or empty), Claude invents a fresh topic
+# from your brand book's content pillars — so the agent never runs dry.
+topics:
+  - "Why most people quit right before it works"
+  - "5 pricing mistakes that quietly kill margins"
+  - "The 80/20 of building an audience from zero"
+  - "What nobody tells you about your first 100 customers"
+  - "How to say no without burning bridges"

@@ -1,0 +1,62 @@
+# ============================================================
+# BRAND BOOK — this file drives everything the agent produces.
+# Edit it to match your visual identity and voice, commit, done.
+# ============================================================
+
+brand:
+  name: "HK"                     # shown in the slide footer
+  handle: "@yourhandle"          # your social handle, shown on slides
+  website: "yoursite.com"        # optional, shown on the CTA slide
+  tagline: "Ideas worth scrolling for"
+
+# ---- Visual identity ---------------------------------------
+colors:
+  background: "#0E0F12"          # slide background
+  surface: "#181A1F"             # cards / accents panels
+  text: "#F5F2EA"                # primary text
+  muted: "#9BA0AB"               # secondary text
+  accent: "#E8C158"              # brand accent (titles, progress bar, numbers)
+  accent_contrast: "#0E0F12"     # text color used on top of the accent
+
+typography:
+  # Google Fonts loaded at render time (needs network). Falls back to system fonts.
+  google_fonts:
+    - "Fraunces:wght@600;700"
+    - "Inter:wght@400;500;600"
+  heading_font: "'Fraunces', Georgia, serif"
+  body_font: "'Inter', -apple-system, 'Segoe UI', sans-serif"
+  heading_weight: 700
+  body_weight: 400
+
+layout:
+  format: "portrait"             # portrait = 1080x1350 (best reach), square = 1080x1080
+  padding: 96                    # inner padding in px
+  show_progress_bar: true        # thin accent bar showing position in the carousel
+  show_slide_numbers: true
+  corner_radius: 28              # used for cards/badges
+
+# ---- Voice & content strategy ------------------------------
+voice:
+  tone: "confident, warm, practical — no corporate fluff, no hype"
+  audience: "founders and operators who want actionable insight, not platitudes"
+  language: "English"
+  rules:
+    - "Hooks must create curiosity in under 10 words"
+    - "One idea per slide, max ~35 words per slide"
+    - "Prefer concrete numbers and examples over abstractions"
+    - "Never use emojis on slides; sparing emoji use in captions is fine"
+
+content_pillars:
+  - "Practical business & growth tactics"
+  - "Behind-the-scenes lessons and mistakes"
+  - "Frameworks and mental models"
+  - "Industry myths debunked"
+
+carousel:
+  slides_min: 6                  # including hook and CTA
+  slides_max: 9
+  cta: "Follow for daily insights. Save this for later."
+
+hashtags:
+  max: 8
+  always_include: []             # e.g. ["#buildinpublic"]
