@@ -7,7 +7,6 @@ import { LeadForm } from "@/components/forms/LeadForm";
 import { FAQAccordion } from "@/components/ui/FAQAccordion";
 import { CONTACT, SOCIALS, SITE } from "@/lib/constants";
 import { GENERAL_FAQS } from "@/lib/faq";
-import { SERVICES } from "@/lib/services";
 
 export const metadata: Metadata = {
   title: "Contact — Book Your Free Consultation",
@@ -40,15 +39,9 @@ const CHANNELS = [
   },
 ];
 
-interface Props {
-  searchParams: Promise<{ service?: string }>;
-}
-
-export default async function ContactPage({ searchParams }: Props) {
-  const { service } = await searchParams;
-  const defaultService =
-    SERVICES.find((s) => s.name === service)?.name ?? "";
-
+export default function ContactPage() {
+  // The service preselection is read from ?service= on the client (LeadForm),
+  // so this page can be statically exported.
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -133,7 +126,6 @@ export default async function ContactPage({ searchParams }: Props) {
           <Reveal className="lg:col-span-3">
             <LeadForm
               source="contact-page"
-              defaultService={defaultService}
               title="Tell Us About Your Requirement"
               subtitle="Complete the form and an HK FINCORP expert will call you back with personalized guidance."
             />
@@ -142,7 +134,6 @@ export default async function ContactPage({ searchParams }: Props) {
             <Reveal delay={0.1}>
               <LeadForm
                 source="contact-quick"
-                defaultService={defaultService}
                 compact
                 title="Quick Consultation"
                 subtitle="In a hurry? Just the essentials — we'll take it from there."

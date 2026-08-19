@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle2, Loader2, Send } from "lucide-react";
@@ -44,11 +44,23 @@ export function LeadForm({
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<LeadInput>({
     resolver: zodResolver(leadSchema),
     defaultValues: { service: defaultService, source },
   });
+
+  // When no service is preselected via props, pick it up from the URL
+  // (?service=...) on the client. Done here rather than server-side so the
+  // page can be statically exported (e.g. for GitHub Pages).
+  useEffect(() => {
+    if (defaultService) return;
+    const param = new URLSearchParams(window.location.search).get("service");
+    if (param && SERVICES.some((s) => s.name === param)) {
+      setValue("service", param);
+    }
+  }, [defaultService, setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
     setStatus("submitting");

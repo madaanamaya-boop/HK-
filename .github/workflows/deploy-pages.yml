@@ -1,0 +1,62 @@
+name: Deploy to GitHub Pages
+
+# Builds the Next.js app as a static export and publishes it to GitHub Pages.
+# Note: GitHub Pages is static-only, so the /api/* routes (lead form, credit-score,
+# chatbot) do not run here — they are removed before the export build. For full
+# functionality including working forms, deploy to Vercel instead.
+
+on:
+  push:
+    branches:
+      - claude/carousel-agent-social-6tw6ti
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Remove server-only API routes (not supported by static export)
+        run: rm -rf app/api
+
+      - name: Build static export
+        env:
+          BUILD_TARGET: pages
+        run: npx next build
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
