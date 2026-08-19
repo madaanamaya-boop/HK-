@@ -1,0 +1,253 @@
+@import "tailwindcss";
+
+@theme {
+  /*
+   * HK FINCORP design system — modern fintech: light, airy, gradient-accented.
+   * Token names carried over from v1 so utilities map cleanly:
+   *   midnight-* → deep ink slate (dark surfaces & text)
+   *   gold-*     → primary emerald→teal accent
+   *   ivory-*    → cool white papers
+   */
+  --color-midnight-950: #05121b;
+  --color-midnight-900: #0a1d29;
+  --color-midnight-800: #12303f;
+  --color-midnight-700: #1d4256;
+  --color-midnight-600: #5a6d7a;
+  --color-midnight-500: #8496a2;
+
+  --color-gold-300: #6ee7c0;
+  --color-gold-400: #2fd6a0;
+  --color-gold-500: #00c48c;
+  --color-gold-600: #00a375;
+  --color-gold-700: #00815e;
+
+  --color-ivory-50: #ffffff;
+  --color-ivory-100: #f2f7f8;
+  --color-ivory-200: #e0eaed;
+
+  /* Gradient companions */
+  --color-aqua-300: #7dd8f0;
+  --color-aqua-400: #35c3e8;
+  --color-aqua-500: #0ea5cf;
+  --color-violet-500: #5b7cfa;
+
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-card: 0 1px 2px rgb(5 18 27 / 0.04), 0 12px 28px -12px rgb(5 18 27 / 0.10);
+  --shadow-card-hover: 0 2px 6px rgb(5 18 27 / 0.06), 0 28px 56px -20px rgb(5 18 27 / 0.20);
+  --shadow-gold: 0 10px 30px -10px rgb(0 196 140 / 0.55);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-ivory-50 text-midnight-900 font-sans antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-gold-500);
+  color: #fff;
+}
+
+/* Numerals align in calculators and metric rows */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+.thin-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: rgb(0 196 140 / 0.35);
+  border-radius: 9999px;
+}
+
+/* ── Gradient system ───────────────────────────────────────────── */
+
+/* Primary fill: emerald → teal → cyan */
+.grad-fill {
+  background-image: linear-gradient(115deg, #00c48c 0%, #0bbfae 52%, #0ea5cf 100%);
+}
+
+.grad-text {
+  background-image: linear-gradient(115deg, #00c48c 0%, #0bbfae 45%, #35c3e8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Soft ambient mesh for light sections */
+.aurora {
+  background-image:
+    radial-gradient(48% 55% at 82% 8%, rgb(0 196 140 / 0.20) 0%, transparent 62%),
+    radial-gradient(42% 48% at 8% 22%, rgb(53 195 232 / 0.16) 0%, transparent 62%),
+    radial-gradient(60% 50% at 50% 100%, rgb(91 124 250 / 0.09) 0%, transparent 65%);
+}
+
+/* Ambient mesh for deep-ink sections */
+.aurora-dark {
+  background-image:
+    radial-gradient(45% 55% at 80% 10%, rgb(0 196 140 / 0.22) 0%, transparent 60%),
+    radial-gradient(40% 45% at 12% 85%, rgb(53 195 232 / 0.14) 0%, transparent 62%);
+}
+
+/* Hairline gradient border on cards — gradient ring, solid interior */
+.ring-grad {
+  position: relative;
+}
+.ring-grad::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(140deg, rgb(0 196 140 / 0.55), rgb(53 195 232 / 0.28), transparent 70%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Frosted panel on dark grounds */
+.glass-dark {
+  background: linear-gradient(160deg, rgb(255 255 255 / 0.09), rgb(255 255 255 / 0.03));
+  border: 1px solid rgb(255 255 255 / 0.12);
+  backdrop-filter: blur(14px);
+}
+
+/* Slow drifting blob behind hero visuals */
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(2%, -3%, 0) scale(1.06); }
+}
+.drift {
+  animation: drift 14s ease-in-out infinite;
+}
+
+/* ── Custom cursor ─────────────────────────────────────────────── */
+/* Native cursor is hidden only once the component mounts, so the page
+   is never left cursor-less if JS fails. */
+.has-custom-cursor,
+.has-custom-cursor a,
+.has-custom-cursor button,
+.has-custom-cursor input,
+.has-custom-cursor select,
+.has-custom-cursor textarea,
+.has-custom-cursor label,
+.has-custom-cursor [role="tab"] {
+  cursor: none;
+}
+
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  will-change: transform;
+}
+.cursor-dot {
+  height: 6px;
+  width: 6px;
+  border-radius: 9999px;
+  background: var(--color-gold-500);
+}
+.cursor-ring {
+  height: 34px;
+  width: 34px;
+  border-radius: 9999px;
+  border: 1.5px solid rgb(0 196 140 / 0.55);
+  transition:
+    height 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.28s ease,
+    border-color 0.28s ease;
+}
+.cursor-ring.cursor-ring-active {
+  height: 54px;
+  width: 54px;
+  background: rgb(0 196 140 / 0.1);
+  border-color: rgb(0 196 140 / 0.75);
+}
+.cursor-ring.cursor-ring-press {
+  height: 26px;
+  width: 26px;
+  background: rgb(0 196 140 / 0.2);
+}
+
+/* Partner marquee */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 38s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Arrow nudge inside buttons/links */
+.nudge {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.group:hover .nudge {
+  transform: translateX(3px);
+}
+
+/* ── Range sliders ─────────────────────────────────────────────── */
+input[type="range"] {
+  @apply h-1.5 w-full cursor-pointer appearance-none rounded-full bg-ivory-200;
+  accent-color: var(--color-gold-500);
+}
+input[type="range"].on-dark {
+  background: rgb(255 255 255 / 0.16);
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 22px;
+  width: 22px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 5px solid var(--color-gold-500);
+  box-shadow: 0 4px 12px rgb(0 196 140 / 0.4);
+  cursor: grab;
+  transition: transform 0.15s ease;
+}
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.12);
+  cursor: grabbing;
+}
+input[type="range"]::-moz-range-thumb {
+  height: 22px;
+  width: 22px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 5px solid var(--color-gold-500);
+  box-shadow: 0 4px 12px rgb(0 196 140 / 0.4);
+  cursor: grab;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .marquee-track,
+  .drift {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
