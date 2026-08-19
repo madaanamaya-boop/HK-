@@ -2,6 +2,14 @@
 
 Production-ready website for **HK FINCORP**, a pan-India financial consultancy with 24+ years of experience across loans and insurance.
 
+## Deploy
+
+Deploy your own copy to Vercel (auto-detects Next.js, no config required):
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/madaanamaya-boop/HK-)
+
+Or import the repo manually at [vercel.com/new](https://vercel.com/new). The `/api/*` routes run as serverless functions and the marketing pages are pre-rendered.
+
 ## Tech Stack
 
 - **Next.js 15** (App Router) + **TypeScript**
